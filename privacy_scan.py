@@ -27,6 +27,6 @@ def main():
     text=base64.b64decode(tr['raw_body_base64']).decode('utf-8',errors='replace')
     text+='\n'+json.dumps(d['request']['body'],ensure_ascii=False)
     original.extend(hits(text,item['attempt_id']));count+=1
- print(json.dumps({'public_files_scanned':files,'public_findings':findings,'original_attempt_bodies_scanned':count,'original_findings':original,'scope':'Pattern screen, not a guarantee that all personal information is detectable. No full reasoning, raw responses, response headers, or local filesystem paths are included in the public data.'},indent=2))
+ print(json.dumps({'public_files_scanned':files,'public_findings':findings,'original_attempt_bodies_scanned':count,'original_findings':original,'scope':'Pattern screen, not exhaustive personal-information detection. Full response bodies and reasoning are included; original HTTP/request headers are not.'},indent=2))
  if findings:raise SystemExit(1)
 if __name__=='__main__':main()

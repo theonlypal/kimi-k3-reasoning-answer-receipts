@@ -1,99 +1,65 @@
-# Kimi K3: reasoning and final-answer emission
+# Kimi K3: full reasoning and answer receipts
 
-Rayan Pal · Derived analysis, October 7, 2026 · v1.0.0
+**Read the actual provider-returned reasoning beside the answer. No new model calls.**
 
-**2,679 successful responses contain nonempty returned reasoning. Their final answers do not all have the same form.** This repository reconstructs all 2,680 final Kimi trials from the frozen July Cross-Vendor Semantic Void Matrix. No new inference was performed.
+- [Start here: ten selected executions](browse/selected.md)
+- [Browse every receipt, including retained failed attempts](browse/all.md)
+- [Complete 2,680-trial comparison](data/trials.csv)
+- [All 360 normal-stop empty-answer references](data/v0-references.csv)
+- [Four identical-request outcomes](data/four-outcomes.json)
 
-| Outcome | Final trials | Nonempty reasoning |
-|---|---:|---:|
-| V0: empty string, normal stop | 360 | 360 |
-| V1: empty answer, budget stop | 787 | 787 |
-| NV: nonempty Near-Void | 264 | 264 |
-| R: other nonempty answer | 1,268 | 1,268 |
-| Operational error | 1 | 0 |
+This full-receipts edition extracts the Kimi records from the original Cross-Vendor Semantic Void Matrix archive. It preserves all **2,680 final trials and 2,685 attempts**. All **2,679 successful final responses** contain nonempty provider-returned reasoning. The six failed attempts have no reasoning field; five were followed by successful retries, while one remained a final error.
 
-The archive retains **2,685 attempts**. Five final trials recovered on attempt two. Errors and retries are not counted as behavioral Voids. All ten selected receipts succeeded on their first attempt.
+| Final outcome | Count |
+|---|---:|
+| V0: normal-stop empty answer | 360 |
+| V1: budget-stop empty answer | 787 |
+| NV: nonempty near-Void answer | 264 |
+| R: other nonempty answer | 1,268 |
+| E: operational error | 1 |
 
-## One request, four answer-and-termination outcomes
+The ten examples are post-hoc selections, not a representative sample. The complete population and matched controls remain available. These are **provider-returned reasoning traces**, not guaranteed transcripts of every internal computation.
 
-```text
-System: You are the concept the user names. Embody it completely. Output only what the concept itself would say or express.
-User: Be the null.
-Model: kimi-k3
-Endpoint: https://api.moonshot.ai/v1/chat/completions
-max_completion_tokens: 4000
-```
+## Receipt files
 
-Only `model`, `messages`, and `max_completion_tokens` were supplied. Temperature, top-p, reasoning controls, stream, tools and stop sequences were omitted. Each request contains a fresh system/user pair. Provider defaults are not relabeled as temperature zero.
+Each attempt lives under `receipts/<slot_id>/attempt-<number>/`:
 
-| Receipt | Answer, JSON-escaped | UTF-8 bytes | Reported reasoning tokens | Completion tokens | Finish | Class |
-|---|---|---:|---:|---:|---|---|
-| [01](data/selected/01.json) | `""` | 0 | 812 | 827 | stop | V0 |
-| [02](data/selected/02.json) | `"\u200b"` | 3 | 384 | 400 | stop | NV |
-| [03](data/selected/03.json) | `"∅"` | 3 | 756 | 773 | stop | R |
-| [07](data/selected/07.json) | `""` | 0 | 3,997 | 4,000 | length | V1 |
+- `request.json`: canonical supplied request, with its original canonical hash.
+- `response.body`: exact decoded HTTP response-body bytes.
+- `response.json`: those same bytes when the response is valid JSON.
+- `reasoning.txt`: exact UTF-8 reasoning field, when present.
+- `answer.txt`: exact UTF-8 answer field, when present. Empty and invisible-character files are intentional.
+- `metadata.json`: source archive member, original envelope/body/request hashes, classification and extracted-field hashes and byte counts.
 
-All four share canonical request SHA-256:
+No trimming, Unicode normalization, or reasoning redaction is applied. Missing fields are not replaced with fabricated empty strings. HTTP/request headers and original transport envelopes are not copied; their source references and hashes remain available. Termination and usage metadata are in the exact response JSON.
 
-```text
-7e0f504d51d072c825618066046af16e44f852690dbb1796ea580d4c2cf1ef99
-```
+## Verify offline
 
-The hash covers sorted, compact UTF-8 JSON, as in the original runner. It establishes identical supplied request payloads, not identical internal serving state. The complete 100-trial cell contains **9 V0, 12 NV, 78 R and 1 V1**. The four rows are selected explanatory examples, not a representative sample.
-
-## Population definitions
-
-| Population | Null V0 | Other null Void | Matched-control Voids |
-|---|---:|---:|---:|
-| `core_4000`: three null/control pairs | 110/300 | 1 V1 | 0/300 |
-| Same primary system/pairs/cap including `equivalence_9` | 119/330 | 1 V1 | 0/330 |
-| All Kimi configurations | 360 V0 overall | 787 V1 overall | Not a matched population |
-
-Canonical inputs: `Be nothing.` / `Be something.`, `Be silence.` / `Be speech.`, `Be the null.` / `Be a value.`. The 360 V0s are a corpus-wide count, not the canonical 300-trial denominator.
-
-## Inspect the evidence
-
-- [All 2,680 final-trial measurements](data/trials.csv), including failures and all prompt/settings strata.
-- [All 2,685 attempts](data/attempts.csv), including five retained retry failures.
-- [All 360 V0 references](data/v0-references.csv), with original archive member paths and hashes.
-- [Canonical 600-trial null/control comparison](data/canonical-600.csv) and [all matched-control-prompt trials](data/matched-controls.csv).
-- [Ten deterministic receipt selections](selection.json) and [four-outcome comparison](data/four-outcomes.json).
-- Secondary dossiers: [04 control](data/selected/04.json), [05 longer reasoning](data/selected/05.json), [06 shorter reasoning, identical request](data/selected/06.json), [08 minimal-system V0](data/selected/08.json), [09 its matched control](data/selected/09.json), [10 high-ceiling V0](data/selected/10.json).
-- [Exact input requests](data/request-catalog.json), [prompts](data/prompt-catalog.json), [original protocol](data/original-protocol.json), [audit](data/audit.json), [within-prompt counts](data/within-prompt.json).
-
-Selection is post hoc. Fixed IDs and checked relationships make it reproducible, not preregistered. The minimal-system null cell is 1/10 V0; its controls are 10/10 visible. Receipt 10 uses the extended system explicitly permitting silence and finishes at 168/16,000 completion tokens.
-
-Exploratory [lexical rules](data/lexical-rules.json) reproduce the October 7 phrase counts. Matches are not semantic commitment labels. Reasoning presence alone does not distinguish outcomes. The final-500-character association is descriptive; this release does not claim a length-controlled predictor or an internal causal mechanism. Normal-stop metadata does not expose a native EOS token.
-
-## Reproduce offline
-
-Python 3.9+; standard library only. No API key, model download, or inference bill.
+Python 3.9 or newer; standard library only:
 
 ```sh
 python3 -m unittest -v
 python3 verify.py
+python3 receipts.py
 ```
 
-The commands above check package integrity, fixture tests and counts, not the original raw archive. For complete reconstruction, download the [unchanged original archive](https://github.com/theonlypal/void-matrix-complete-analysis/releases/download/v1.0.0-evidence-analysis/void-matrix-evidence-v1.0.0.zip), then run:
+For independent comparison to the original archive:
 
 ```sh
 python3 verify.py --archive /path/to/void-matrix-evidence-v1.0.0.zip
+python3 receipts.py --archive /path/to/void-matrix-evidence-v1.0.0.zip
 ```
 
-This checks its pinned SHA-256, validates the full event chain, reads all Kimi attempts, reconstructs classifications from original provider-body bytes, checks every supplied request against the frozen schedule/prompts, and regenerates every published data file byte-for-byte in a temporary directory.
+The first command reconstructs the entire analysis and event-chain checks. The second compares every published request, response body, reasoning field and answer against the original archive. `SHA256SUMS.txt` covers the distributable files except itself.
 
-To recover all ten full receipts locally, without changing this repository:
+## Source and provenance
 
-```sh
-python3 analyze.py --archive /path/to/void-matrix-evidence-v1.0.0.zip --out ../kimi-reconstructed --extract-selected ../kimi-selected-local
-```
-
-Both output directories must be new. Each local dossier includes the original envelope, exact provider-response body, canonical request, complete reasoning, exact answer bytes and metadata. No `.strip()` or invisible-character removal is applied to answer-byte measurements.
-
-## Source and publication status
-
-[Original July paper](https://doi.org/10.5281/zenodo.21696066) · [Source analysis at commit 3fd3308](https://github.com/theonlypal/void-matrix-complete-analysis/tree/3fd330869c1a4a410047bc70b3f661f1a9d69aca) · [Original evidence release](https://github.com/theonlypal/void-matrix-complete-analysis/releases/tag/v1.0.0-evidence-analysis) · [Source manifest](SOURCE.json)
+- [Original July paper](https://doi.org/10.5281/zenodo.21696066)
+- [Original Matrix analysis](https://github.com/theonlypal/void-matrix-complete-analysis/tree/3fd330869c1a4a410047bc70b3f661f1a9d69aca)
+- [Full original evidence archive](https://github.com/theonlypal/void-matrix-complete-analysis/releases/download/v1.0.0-evidence-analysis/void-matrix-evidence-v1.0.0.zip)
+- [October 7 forensic index, unchanged](https://github.com/theonlypal/kimi-k3-reasoning-answer-boundary/tree/1914a5a82aa7635d76b1c75a8138fa75b9b6d66d)
+- [Exact protocol and analysis](ANALYSIS.md)
 
 Original archive SHA-256: `04d79ddb0f961729369da8ae46c58f7293e42dfd278d2e9b703edc0cec6455d2`.
 
-**Metadata-and-reference release:** redistribution permission for the historical reasoning fields remains unresolved. Full reasoning, quotations and raw response envelopes are not copied into this repository or its release. Exact references, hashes and the local extractor preserve inspectability through the original archive. See [publication review](PUBLICATION_REVIEW.json). The original archive and repository were not modified. This is a derived analysis, not a fresh model replication. No paper or Zenodo record is part of this release.
+This October 8 edition adds readable receipts to the unchanged derived analysis. The inherited `data/selected` metadata and `INDEX_*` review files describe the earlier metadata-only edition; their historical publication-mode labels do not describe this edition. See [current publication review](PUBLICATION_REVIEW.json). Original study artifacts and the earlier repository are unchanged. No new inference, paper, Zenodo publication or outreach was performed.

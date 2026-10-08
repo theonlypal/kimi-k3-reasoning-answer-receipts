@@ -1,14 +1,11 @@
 {
-  "review_date": "2026-10-07",
-  "provider_terms": [
-    "https://platform.kimi.ai/docs/agreement/modeluse",
-    "https://moonshot-ai.gitbook.io/moonshot-ai/terms-and-agreement/terms-of-service-for-kimi-openplatform"
-  ],
-  "current_terms_displayed_date": "July 30th, 2026",
-  "finding": "The public terms define input and output as content and disclaim ownership of that content. This review did not establish specific redistribution permission for the historical reasoning fields or the account agreement applicable during collection.",
-  "permission_status": "unresolved; no assertion that redistribution is prohibited",
-  "action": "User-authorized fallback: publish measurements, exact input requests, hashes, source member references and offline reconstruction code. Do not republish full reasoning, reasoning quotations, full provider responses or original raw envelopes in this derived release.",
-  "source_archive": "Linked unchanged. Existing public availability is not treated as independent proof of permission.",
-  "privacy_scope": "Selected reasoning and answers were read in full during local selection. All attempt bodies are pattern-screened for credentials and contact details. Public outputs use allowlisted measured fields; raw headers, response IDs, base64 bodies and complete reasoning are omitted. Public-name mentions in philosophical or programming discussion are not treated as private identifiers.",
-  "limitations": "Pattern scanning is not exhaustive detection of personal information. Terms review is a documented publication decision, not legal certification. Full local extraction is available only as an explicit optional command."
+  "review_date": "2026-10-08",
+  "publication_mode": "full provider-returned reasoning and response bodies",
+  "authorization": "The research author explicitly requested public republication of every Kimi receipt from the already public original archive after discussion of the earlier unresolved terms review.",
+  "terms_source": "https://platform.kimi.ai/docs/agreement/modeluse",
+  "terms_finding": "Current public section 4 defines input and output as content and disclaims provider ownership. No specific prohibition on publishing returned reasoning was identified. Historical account-specific contractual terms were not established; no claim of special provider permission or legal certification is made.",
+  "privacy": "Original HTTP and request headers are not republished. Response bodies, reasoning and answers are byte-preserving extractions, screened for credential and contact patterns. A pattern scan is not exhaustive personal-information detection.",
+  "licensing": "The MIT license applies to analysis code, not a relicensing of provider outputs or third-party material.",
+  "source_unchanged": true,
+  "prior_repository_unchanged": true
 }
